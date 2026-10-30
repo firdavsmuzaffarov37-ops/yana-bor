@@ -1,31 +1,61 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRightLeft, Lock, Phone, ArrowRight, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, ArrowRightLeft, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+
+// Animated orb / glowing sphere for the right panel
+function GlowOrb() {
+  return (
+    <div className="relative w-32 h-32 mx-auto mb-6">
+      {/* Outer glow rings */}
+      <div className="absolute inset-0 rounded-full bg-purple-400/20 animate-ping" style={{ animationDuration: '3s' }} />
+      <div className="absolute inset-2 rounded-full bg-purple-500/30 animate-pulse" />
+      {/* Main orb */}
+      <div className="absolute inset-4 rounded-full bg-gradient-to-br from-purple-300 via-violet-400 to-purple-600 shadow-2xl shadow-purple-500/60 flex items-center justify-center">
+        <div className="w-4 h-4 rounded-full bg-white/80 blur-sm" />
+        <div className="absolute w-3 h-3 rounded-full bg-purple-200/90 top-6 left-6 blur-[2px]" />
+        <div className="absolute w-2 h-2 rounded-full bg-white/60 bottom-5 right-5 blur-[1px]" />
+      </div>
+    </div>
+  );
+}
+
+// Quick action chips for the right panel
+function ActionChip({ icon, label }) {
+  return (
+    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-white/80 text-xs cursor-default hover:bg-white/20 transition-colors">
+      <span className="text-base">{icon}</span>
+      <span>{label}</span>
+    </div>
+  );
+}
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login, switchDemoUser } = useAuth();
   const { t } = useLanguage();
 
-  const [identifier, setIdentifier] = useState('+998 90 123 45 67');
-  const [password, setPassword] = useState('yanabor2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [keepLogin, setKeepLogin] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!identifier) {
-      setError(t('auth.phoneOrEmail'));
+    if (!email) {
+      setError('Email manzilini kiriting');
       return;
     }
     setIsLoading(true);
+    setError('');
     setTimeout(() => {
-      login(identifier, password);
+      login(email, password);
       setIsLoading(false);
       navigate('/profile');
-    }, 400);
+    }, 500);
   };
 
   const handleQuickDemo = (userId) => {
@@ -34,136 +64,215 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-4xl bg-white rounded-[2.5rem] border border-stone-200/90 shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-12">
-        
-        {/* Left Side: Editorial Brand Panel */}
-        <div className="md:col-span-5 bg-[#141A1E] text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/80 via-transparent to-black pointer-events-none"></div>
-          
-          <div className="relative z-10 space-y-4">
-            <Link to="/" className="inline-flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white">
-                <ArrowRightLeft className="w-4 h-4 text-emerald-100" />
-              </div>
-              <span className="font-serif text-xl font-bold tracking-tight text-white">
-                Yana<span className="text-emerald-400">Bor</span>
-              </span>
-            </Link>
-
-            <div className="pt-8 space-y-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-                {t('auth.loginBadge')}
-              </span>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold leading-tight">
-                {t('auth.loginTitle')}
-              </h2>
+    <div
+      className="min-h-screen flex items-center justify-center px-4 py-10"
+      style={{
+        background: 'linear-gradient(135deg, #0d0015 0%, #1a0030 40%, #0a001a 100%)',
+      }}
+    >
+      {/* Card */}
+      <div
+        className="w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2"
+        style={{ background: 'rgba(15, 5, 30, 0.95)', border: '1px solid rgba(139, 92, 246, 0.18)' }}
+      >
+        {/* ─── LEFT: Login Form ─── */}
+        <div className="p-8 sm:p-10 flex flex-col justify-center space-y-6">
+          {/* Logo */}
+          <Link to="/" className="inline-flex items-center gap-2 mb-2">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center shadow-lg shadow-violet-800/40">
+              <ArrowRightLeft className="w-4 h-4 text-white" />
             </div>
-
-            <p className="text-xs text-stone-400 leading-relaxed">
-              {t('auth.loginSubtitle')}
-            </p>
-          </div>
-
-          {/* Quick Demo Login Pill Helper */}
-          <div className="relative z-10 pt-8 border-t border-stone-800 space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-emerald-400" /> {t('auth.quickDemoUsers')}
+            <span className="font-serif text-xl font-bold tracking-tight text-white">
+              Yana<span className="text-violet-400">Bor</span>
             </span>
-            <div className="flex flex-col gap-1.5">
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('user-demo-1')}
-                className="w-full text-left px-3 py-2 rounded-xl bg-white/10 hover:bg-emerald-900/60 border border-white/15 text-xs text-stone-200 hover:text-white transition flex items-center justify-between"
-              >
-                <span>Azizbek Rahimov (Toshkent)</span>
-                <span className="text-[10px] text-emerald-300">→</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('user-2')}
-                className="w-full text-left px-3 py-2 rounded-xl bg-white/10 hover:bg-emerald-900/60 border border-white/15 text-xs text-stone-200 hover:text-white transition flex items-center justify-between"
-              >
-                <span>Madina Karimova (Samarqand)</span>
-                <span className="text-[10px] text-emerald-300">→</span>
-              </button>
+          </Link>
+
+          {/* Avatar placeholder */}
+          <div className="flex justify-center">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-violet-600 to-purple-900 border-2 border-violet-500/40 flex items-center justify-center text-2xl shadow-lg shadow-violet-800/30">
+              👤
             </div>
           </div>
-        </div>
 
-        {/* Right Side: Login Form */}
-        <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-center space-y-6">
-          <div>
-            <h3 className="font-serif text-3xl font-bold text-charcoal-900">
-              {t('auth.signIn')}
-            </h3>
-            <p className="text-xs text-stone-500 mt-1">
-              {t('auth.phoneOrEmail')}
-            </p>
+          {/* Heading */}
+          <div className="text-center space-y-1">
+            <h2 className="text-2xl font-bold text-white">Welcome Back</h2>
+            <p className="text-sm text-purple-300/70">Enter your email and passwords to access</p>
           </div>
 
+          {/* Error */}
           {error && (
-            <div className="p-3 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-700 font-medium">
+            <div className="px-4 py-2.5 rounded-xl bg-red-900/40 border border-red-500/40 text-xs text-red-300">
               {error}
             </div>
           )}
 
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1">
-                {t('auth.phoneOrEmail')}
+              <label className="block text-xs font-medium text-purple-300/80 mb-1.5">
+                Email address
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="user@yanabor.uz"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-purple-400/40 outline-none transition-all focus:ring-2 focus:ring-violet-500/60"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(139,92,246,0.25)',
+                }}
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-xs font-medium text-purple-300/80 mb-1.5">
+                Passwords
               </label>
               <div className="relative">
                 <input
-                  type="text"
-                  required
-                  placeholder="+998 90 123 45 67 / user@yanabor.uz"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  className="w-full bg-[#FAF8F5] focus:bg-white border border-stone-300 focus:border-emerald-600 rounded-2xl px-4 py-3 pl-11 text-sm text-charcoal-900 focus:outline-none transition shadow-inner"
-                />
-                <Phone className="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5 pointer-events-none" />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-stone-700">
-                  {t('auth.password')}
-                </label>
-              </div>
-              <div className="relative">
-                <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-[#FAF8F5] focus:bg-white border border-stone-300 focus:border-emerald-600 rounded-2xl px-4 py-3 pl-11 text-sm text-charcoal-900 focus:outline-none transition shadow-inner"
+                  className="w-full rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder-purple-400/40 outline-none transition-all focus:ring-2 focus:ring-violet-500/60"
+                  style={{
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(139,92,246,0.25)',
+                  }}
                 />
-                <Lock className="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5 pointer-events-none" />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-400/60 hover:text-purple-300 transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
+            {/* Keep me login + Forget password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer text-xs text-purple-300/70">
+                <input
+                  type="checkbox"
+                  checked={keepLogin}
+                  onChange={(e) => setKeepLogin(e.target.checked)}
+                  className="w-3.5 h-3.5 accent-violet-500 cursor-pointer rounded"
+                />
+                Keep me login
+              </label>
+              <button type="button" className="text-xs text-violet-400 hover:text-violet-300 transition-colors">
+                Forget password?
+              </button>
+            </div>
+
+            {/* Login button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 active:bg-emerald-950 text-white font-bold text-sm shadow-md shadow-emerald-900/15 transition flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl font-semibold text-sm text-white transition-all hover:opacity-90 active:scale-[0.98] shadow-lg shadow-violet-900/40 disabled:opacity-60"
+              style={{
+                background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
+              }}
             >
-              <span>{isLoading ? t('common.loading') : t('auth.enterAccount')}</span>
-              <ArrowRight className="w-4 h-4" />
+              {isLoading ? 'Kirish...' : 'Login'}
             </button>
           </form>
 
-          <div className="text-center pt-2 border-t border-stone-100 text-xs text-stone-500">
-            <span>{t('auth.noAccount')} </span>
-            <Link to="/register" className="font-bold text-emerald-800 hover:underline">
-              {t('auth.registerNow')}
+          {/* Register link */}
+          <p className="text-center text-xs text-purple-300/60">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-violet-400 font-semibold hover:text-violet-300 transition-colors">
+              Register
             </Link>
-          </div>
+          </p>
 
+          {/* Demo users */}
+          <div className="pt-4 border-t border-violet-800/30">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-purple-400/60 flex items-center gap-1 mb-2">
+              <Sparkles className="w-3 h-3 text-violet-400" /> Demo foydalanuvchilar
+            </p>
+            <div className="flex flex-col gap-1.5">
+              {[
+                { id: 'user-demo-1', label: 'Azizbek Rahimov (Toshkent)' },
+                { id: 'user-2', label: 'Madina Karimova (Samarqand)' },
+              ].map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => handleQuickDemo(id)}
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs text-purple-200/80 hover:text-white transition-all flex items-center justify-between"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(139,92,246,0.15)' }}
+                >
+                  <span>{label}</span>
+                  <span className="text-violet-400">→</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
+        {/* ─── RIGHT: AI Assistant Preview Panel ─── */}
+        <div
+          className="hidden md:flex flex-col items-center justify-between p-8 relative overflow-hidden"
+          style={{
+            background: 'linear-gradient(160deg, #3b0d6e 0%, #6d28d9 40%, #9333ea 70%, #c026d3 100%)',
+          }}
+        >
+          {/* Background glow blobs */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+          <div className="absolute bottom-10 right-4 w-40 h-40 rounded-full bg-purple-300/10 blur-2xl pointer-events-none" />
+
+          {/* Top content */}
+          <div className="relative z-10 text-center pt-6 flex-1 flex flex-col items-center justify-center">
+            <GlowOrb />
+
+            <h3 className="text-xl font-bold text-white mb-2">What Can I Help You.!</h3>
+            <p className="text-xs text-white/60 max-w-[220px] leading-relaxed">
+              I'm here to listen, understand your needs, and provide clear.
+            </p>
+
+            {/* Quick action chips */}
+            <div className="flex flex-wrap justify-center gap-2 mt-6">
+              <ActionChip icon="📊" label="Dashboard" />
+              <ActionChip icon="🚀" label="Landing Page" />
+              <ActionChip icon="💡" label="Plan My MVP" />
+              <ActionChip icon="🌐" label="Web" />
+            </div>
+          </div>
+
+          {/* Chat input mockup */}
+          <div
+            className="relative z-10 w-full rounded-2xl p-4 mt-4"
+            style={{ background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.15)' }}
+          >
+            <p className="text-xs text-white/50 mb-4">Ask me anything......</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <button className="w-6 h-6 rounded-full bg-white/20 text-white/70 flex items-center justify-center text-xs hover:bg-white/30 transition-colors">+</button>
+                <button className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/10 text-white/60 text-[10px] hover:bg-white/20 transition-colors">
+                  📎 Files
+                </button>
+                <button className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/10 text-white/60 text-[10px] hover:bg-white/20 transition-colors">
+                  🔍 Search
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="w-6 h-6 rounded-full bg-white/10 text-white/60 flex items-center justify-center text-xs hover:bg-white/20 transition-colors">🎤</button>
+                <button className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] text-white font-medium hover:opacity-80 transition-opacity"
+                  style={{ background: 'linear-gradient(135deg,#7c3aed,#a855f7)' }}>
+                  ✦ Task
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
