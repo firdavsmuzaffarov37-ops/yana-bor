@@ -9,6 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useMarketplace } from '../../context/MarketplaceContext';
 import { useLanguage } from '../../context/LanguageContext';
 import LanguageSelector from '../common/LanguageSelector';
+import { isSupabaseConfigured } from '../../services/supabaseClient';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout, switchDemoUser } = useAuth();
@@ -35,9 +36,16 @@ export default function Navbar() {
       <div className="bg-emerald-950 text-emerald-200 text-xs py-1.5 px-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              {t('common.demoMode')}
-            </span>
+            {isSupabaseConfigured() ? (
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                Supabase Ulangan
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                {t('common.demoMode')}
+              </span>
+            )}
             <span className="hidden sm:inline">
               {t('common.announcement')}
             </span>
