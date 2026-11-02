@@ -24,7 +24,6 @@ export default function SellItemPage() {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('electronics');
   const [price, setPrice] = useState('');
-  const [originalPrice, setOriginalPrice] = useState('');
   const [condition, setCondition] = useState('Yangidek');
   const [conditionScore, setConditionScore] = useState(9.5);
   const [description, setDescription] = useState('');
@@ -86,7 +85,6 @@ export default function SellItemPage() {
       title,
       category,
       price: Number(price),
-      originalPrice: originalPrice ? Number(originalPrice) : null,
       condition,
       conditionScore: Number(conditionScore),
       description,
@@ -251,41 +249,26 @@ export default function SellItemPage() {
             </div>
 
             {/* Price in UZS */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1.5">
-                  {t('sell.priceLabel')}
-                </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    required
-                    placeholder={t('sell.pricePlaceholder')}
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    className="w-full bg-[#FAF8F5] focus:bg-white border border-stone-300 focus:border-emerald-600 rounded-2xl px-4 py-3 pl-9 text-sm text-charcoal-900 font-bold focus:outline-none transition"
-                  />
-                  <DollarSign className="w-4 h-4 text-stone-400 absolute left-3 top-3.5 pointer-events-none" />
-                </div>
-                {price && (
-                  <span className="text-xs text-emerald-800 font-semibold mt-1 block">
-                    {formatCurrency(price)}
-                  </span>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1.5">
-                  {t('sell.originalPriceLabel')}
-                </label>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-stone-700 mb-1.5">
+                {t('sell.priceLabel')}
+              </label>
+              <div className="relative">
                 <input
                   type="number"
-                  placeholder={t('sell.originalPricePlaceholder')}
-                  value={originalPrice}
-                  onChange={(e) => setOriginalPrice(e.target.value)}
-                  className="w-full bg-[#FAF8F5] focus:bg-white border border-stone-300 focus:border-emerald-600 rounded-2xl px-4 py-3 text-sm text-charcoal-900 focus:outline-none transition"
+                  required
+                  placeholder={t('sell.pricePlaceholder')}
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="w-full bg-[#FAF8F5] focus:bg-white border border-stone-300 focus:border-emerald-600 rounded-2xl px-4 py-3 pl-9 text-sm text-charcoal-900 font-bold focus:outline-none transition"
                 />
+                <DollarSign className="w-4 h-4 text-stone-400 absolute left-3 top-3.5 pointer-events-none" />
               </div>
+              {price && (
+                <span className="text-xs text-emerald-800 font-semibold mt-1 block">
+                  {formatCurrency(price)}
+                </span>
+              )}
             </div>
 
             {/* Exchange Toggle */}

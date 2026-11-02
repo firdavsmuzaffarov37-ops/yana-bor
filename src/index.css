@@ -14,6 +14,16 @@
   }
 }
 
+/* Fix browser autofill blue background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 50px #FAF8F5 inset !important;
+  -webkit-text-fill-color: #1E2429 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 /* Custom smooth transitions */
 .transition-smooth {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);

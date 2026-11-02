@@ -108,11 +108,6 @@ export default function ProductCard({ item, viewMode = 'grid' }) {
                 <span className="text-xl font-bold text-stone-900">
                   {formatCurrency(item.price)}
                 </span>
-                {item.originalPrice && (
-                  <span className="text-xs text-stone-400 line-through">
-                    {formatCurrency(item.originalPrice)}
-                  </span>
-                )}
               </div>
               <div className="flex items-center gap-1 text-xs text-stone-500 mt-0.5">
                 <MapPin className="w-3 h-3 text-stone-400" />
@@ -223,11 +218,6 @@ export default function ProductCard({ item, viewMode = 'grid' }) {
               <span className="text-lg font-bold text-stone-900">
                 {formatCurrency(item.price)}
               </span>
-              {item.originalPrice && (
-                <span className="text-xs text-stone-400 line-through">
-                  {formatCurrency(item.originalPrice)}
-                </span>
-              )}
             </div>
           </div>
 

@@ -219,16 +219,11 @@ export default function ProductDetailPage() {
                 {localizedTitle}
               </h1>
 
-              {/* Price display with discount strike */}
+              {/* Price display */}
               <div className="mt-4 flex items-baseline gap-3">
                 <span className="text-3xl font-bold text-charcoal-900">
                   {formatCurrency(item.price)}
                 </span>
-                {item.originalPrice && (
-                  <span className="text-sm text-stone-400 line-through">
-                    {formatCurrency(item.originalPrice)}
-                  </span>
-                )}
               </div>
             </div>
 
