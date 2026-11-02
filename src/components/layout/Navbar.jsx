@@ -2,22 +2,19 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Search, Heart, MessageSquare, PlusCircle, User, 
-  Menu, X, Sparkles, RefreshCw, LogOut, ArrowRightLeft,
-  ChevronDown, ShieldCheck, Tag
+  Menu, X, LogOut, ArrowRightLeft, ChevronDown, Tag
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useMarketplace } from '../../context/MarketplaceContext';
 import { useLanguage } from '../../context/LanguageContext';
 import LanguageSelector from '../common/LanguageSelector';
-import { isSupabaseConfigured } from '../../services/supabaseClient';
 
 export default function Navbar() {
-  const { user, isAuthenticated, logout, switchDemoUser } = useAuth();
-  const { favorites, conversations, searchTerm, setSearchTerm, resetAllData } = useMarketplace();
+  const { user, isAuthenticated, logout } = useAuth();
+  const { favorites, conversations, searchTerm, setSearchTerm } = useMarketplace();
   const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [demoMenuOpen, setDemoMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,123 +28,45 @@ export default function Navbar() {
   const unreadMessagesCount = conversations.reduce((acc, c) => acc + (c.unreadCount || 0), 0);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#E8E4DA] transition-all">
-      {/* Top Demo Bar / Announcement */}
-      <div className="bg-emerald-950 text-emerald-200 text-xs py-1.5 px-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {isSupabaseConfigured() ? (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                Supabase Ulangan
-              </span>
-            ) : (
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                {t('common.demoMode')}
-              </span>
-            )}
-            <span className="hidden sm:inline">
-              {t('common.announcement')}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Language Selector in top bar */}
-            <LanguageSelector variant="pills" />
-
-            <span className="text-emerald-700 hidden sm:inline">|</span>
-
-            <div className="relative">
-              <button 
-                onClick={() => setDemoMenuOpen(!demoMenuOpen)}
-                className="text-xs text-emerald-300 hover:text-white flex items-center gap-1 transition"
-              >
-                <span>{t('common.user')}: <b>{user?.name || t('common.guest')}</b></span>
-                <ChevronDown className="w-3 h-3" />
-              </button>
-
-              {demoMenuOpen && (
-                <div className="absolute right-0 mt-1 w-56 bg-white text-charcoal-900 rounded-xl shadow-xl border border-stone-200 py-2 z-50 text-xs">
-                  <div className="px-3 py-1 font-semibold text-stone-500 border-b border-stone-100">
-                    {t('common.switchAccount')}
-                  </div>
-                  <button
-                    onClick={() => { switchDemoUser('user-demo-1'); setDemoMenuOpen(false); }}
-                    className="w-full text-left px-3 py-2 hover:bg-emerald-50 flex items-center justify-between"
-                  >
-                    <span>Azizbek Rahimov (Toshkent)</span>
-                    {user?.id === 'user-demo-1' && <span className="text-emerald-600 font-bold">✓</span>}
-                  </button>
-                  <button
-                    onClick={() => { switchDemoUser('user-2'); setDemoMenuOpen(false); }}
-                    className="w-full text-left px-3 py-2 hover:bg-emerald-50 flex items-center justify-between"
-                  >
-                    <span>Madina Karimova (Samarqand)</span>
-                    {user?.id === 'user-2' && <span className="text-emerald-600 font-bold">✓</span>}
-                  </button>
-                  <button
-                    onClick={() => { switchDemoUser('user-3'); setDemoMenuOpen(false); }}
-                    className="w-full text-left px-3 py-2 hover:bg-emerald-50 flex items-center justify-between"
-                  >
-                    <span>Jasur Temirov (Toshkent)</span>
-                    {user?.id === 'user-3' && <span className="text-emerald-600 font-bold">✓</span>}
-                  </button>
-                  <div className="border-t border-stone-100 my-1"></div>
-                  <button
-                    onClick={() => { resetAllData(); setDemoMenuOpen(false); }}
-                    className="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 flex items-center gap-1.5"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    <span>{t('common.resetData')}</span>
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <span className="text-emerald-500 hidden sm:inline">|</span>
-            <Link to="/how-it-works" className="hover:text-white transition hidden sm:inline">
-              {t('nav.howItWorksMenu')}
-            </Link>
-          </div>
-        </div>
-      </div>
-
+    <header className="sticky top-0 z-50 bg-[#FAF8F5]/90 backdrop-blur-xl border-b border-[#E8E4DA] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] transition-all">
       {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 gap-4">
+      <div className="max-w-[1520px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+        <div className="flex items-center justify-between h-20 gap-3 sm:gap-5 xl:gap-8">
           
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-800 to-emerald-950 flex items-center justify-center text-white shadow-md shadow-emerald-900/20 group-hover:scale-105 transition-transform">
-              <ArrowRightLeft className="w-5 h-5 text-emerald-300 transform -rotate-12 group-hover:rotate-0 transition-transform duration-300" />
-            </div>
+          <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
+            <img 
+              src="/logo.png" 
+              alt="YanaBor" 
+              className="w-12 h-12 rounded-2xl object-cover shadow-md shadow-emerald-950/20 group-hover:scale-105 group-hover:rotate-1 transition-all duration-300 ring-1 ring-emerald-500/25" 
+            />
             <div className="flex flex-col">
-              <span className="font-serif text-2xl font-bold tracking-tight text-emerald-950 flex items-center gap-1">
-                Yana<span className="text-emerald-600">Bor</span>
+              <span className="font-serif text-2xl font-bold tracking-tight text-emerald-950 flex items-center gap-0.5 leading-none">
+                Yana<span className="text-emerald-700">Bor</span>
               </span>
-              <span className="text-[10px] tracking-widest uppercase font-semibold text-stone-500 -mt-1">
+              <span className="text-[10px] tracking-widest uppercase font-semibold text-stone-400 mt-1">
                 Second-Life Uzbekistan
               </span>
             </div>
           </Link>
 
           {/* Nav Links - Desktop */}
-          <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-stone-700">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[14px] font-medium text-stone-700 flex-shrink-0">
             <Link 
               to="/" 
-              className={`hover:text-emerald-700 transition ${location.pathname === '/' ? 'text-emerald-700 font-semibold' : ''}`}
+              className={`hover:text-emerald-800 transition ${location.pathname === '/' ? 'text-emerald-800 font-bold' : ''}`}
             >
               {t('nav.home')}
             </Link>
             <Link 
               to="/explore" 
-              className={`hover:text-emerald-700 transition ${location.pathname === '/explore' ? 'text-emerald-700 font-semibold' : ''}`}
+              className={`hover:text-emerald-800 transition ${location.pathname === '/explore' ? 'text-emerald-800 font-bold' : ''}`}
             >
               {t('nav.explore')}
             </Link>
             <Link 
               to="/exchange" 
-              className={`flex items-center gap-1.5 hover:text-emerald-700 transition ${location.pathname === '/exchange' ? 'text-emerald-700 font-semibold' : ''}`}
+              className={`flex items-center gap-1.5 hover:text-emerald-800 transition ${location.pathname === '/exchange' ? 'text-emerald-800 font-bold' : ''}`}
             >
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -157,39 +76,41 @@ export default function Navbar() {
             </Link>
             <Link 
               to="/how-it-works" 
-              className={`hover:text-emerald-700 transition ${location.pathname === '/how-it-works' ? 'text-emerald-700 font-semibold' : ''}`}
+              className={`hover:text-emerald-800 transition ${location.pathname === '/how-it-works' ? 'text-emerald-800 font-bold' : ''}`}
             >
               {t('nav.howItWorks')}
             </Link>
           </nav>
 
           {/* Search Bar - Quick Header */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center flex-1 max-w-xs xl:max-w-md relative">
+          <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center flex-1 max-w-sm lg:max-w-md xl:max-w-xl mx-2 lg:mx-4 relative">
             <input
               type="text"
-              placeholder={t('common.searchPlaceholder')}
+              placeholder="Qidirish: iPhone, mebel, velosiped..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#F3EFE6] hover:bg-[#EFEAE0] focus:bg-white text-sm text-charcoal-900 placeholder-stone-500 rounded-full py-2.5 pl-10 pr-4 border border-transparent focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/10 transition shadow-inner"
+              className="w-full bg-[#F3EFE6] hover:bg-[#EFEAE0] focus:bg-white text-sm text-stone-900 placeholder:text-stone-400 rounded-full py-2.5 pl-11 pr-4 border border-stone-200/60 focus:border-emerald-600 focus:outline-none focus:ring-4 focus:ring-emerald-600/10 transition-all shadow-inner"
             />
-            <Search className="w-4 h-4 text-stone-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
           </form>
 
           {/* Right Action Icons & Auth */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3.5 flex-shrink-0">
             
             {/* Language Selector Dropdown */}
             <LanguageSelector className="hidden sm:block" />
 
+            <div className="h-5 w-[1px] bg-stone-200 hidden sm:block"></div>
+
             {/* Favorites Icon */}
             <Link 
               to="/profile?tab=favorites" 
-              className="relative p-2.5 rounded-full text-stone-700 hover:text-emerald-700 hover:bg-stone-200/50 transition"
+              className="relative w-10 h-10 rounded-full bg-stone-100/80 hover:bg-emerald-50 text-stone-700 hover:text-emerald-800 flex items-center justify-center transition border border-stone-200/60"
               title={t('nav.favorites')}
             >
-              <Heart className="w-5 h-5" />
+              <Heart className="w-4 h-4" />
               {favorites.length > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-amber-600 text-white text-[10px] font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-600 text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
                   {favorites.length}
                 </span>
               )}
@@ -198,12 +119,12 @@ export default function Navbar() {
             {/* Messages Icon */}
             <Link 
               to="/messages" 
-              className="relative p-2.5 rounded-full text-stone-700 hover:text-emerald-700 hover:bg-stone-200/50 transition"
+              className="relative w-10 h-10 rounded-full bg-stone-100/80 hover:bg-emerald-50 text-stone-700 hover:text-emerald-800 flex items-center justify-center transition border border-stone-200/60"
               title={t('nav.messages')}
             >
-              <MessageSquare className="w-5 h-5" />
+              <MessageSquare className="w-4 h-4" />
               {unreadMessagesCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center animate-pulse shadow-sm">
                   {unreadMessagesCount}
                 </span>
               )}
@@ -212,9 +133,9 @@ export default function Navbar() {
             {/* Sell Button - Prominent CTA */}
             <Link
               to="/sell"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-emerald-800 hover:bg-emerald-900 active:bg-emerald-950 text-white font-medium text-sm shadow-md shadow-emerald-900/15 hover:shadow-lg transition transform hover:-translate-y-0.5"
+              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-800 to-emerald-700 hover:from-emerald-700 hover:to-emerald-600 text-white font-semibold text-sm shadow-md shadow-emerald-900/15 hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer"
             >
-              <PlusCircle className="w-4 h-4 text-emerald-300" />
+              <PlusCircle className="w-4 h-4 text-emerald-200" />
               <span>{t('nav.sell')}</span>
             </Link>
 
@@ -223,17 +144,17 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 p-1 pl-2 rounded-full border border-stone-300 hover:border-emerald-600 bg-white transition shadow-sm"
+                  className="flex items-center gap-2 p-1.5 pr-3 pl-1.5 rounded-full border border-stone-200 hover:border-emerald-600 bg-white hover:bg-stone-50 transition shadow-sm cursor-pointer"
                 >
                   <img
                     src={user.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=240&auto=format&fit=crop&q=80'}
                     alt={user.name}
-                    className="w-7 h-7 rounded-full object-cover"
+                    className="w-8 h-8 rounded-full object-cover ring-1 ring-emerald-500/20"
                   />
-                  <span className="text-xs font-semibold text-stone-800 max-w-[80px] truncate hidden sm:inline">
+                  <span className="text-xs font-semibold text-stone-800 max-w-[90px] truncate hidden sm:inline">
                     {user.name.split(' ')[0]}
                   </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-stone-500 mr-1" />
+                  <ChevronDown className="w-3.5 h-3.5 text-stone-400" />
                 </button>
 
                 {userDropdownOpen && (

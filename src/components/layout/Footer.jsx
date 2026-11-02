@@ -14,10 +14,12 @@ export default function Footer() {
           
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
-            <Link to="/" className="inline-flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                <ArrowRightLeft className="w-5 h-5 text-emerald-100" />
-              </div>
+            <Link to="/" className="inline-flex items-center gap-2.5 group">
+              <img 
+                src="/logo.png" 
+                alt="YanaBor" 
+                className="w-10 h-10 rounded-2xl object-cover shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform ring-1 ring-emerald-500/30" 
+              />
               <span className="font-serif text-2xl font-bold tracking-tight text-white">
                 Yana<span className="text-emerald-400">Bor</span>
               </span>
